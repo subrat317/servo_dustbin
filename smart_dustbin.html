@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Dustbin Project</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        h1, h2 {
+            color: #4CAF50;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section img {
+            display: block;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Smart Dustbin Project</h1>
+        <p>The Smart Dustbin uses an Arduino Uno to open the dustbin lid automatically when an object or hand is detected within a certain distance. This project is useful in places where contactless garbage disposal is preferred.</p>
+
+        <div class="section">
+            <h2>Components and Specifications</h2>
+
+            <h3>1. Arduino Uno</h3>
+            <p>The Arduino Uno is the brain of the project, controlling the ultrasonic sensor and servo motor.</p>
+            <img src="https://www.arduino-france.com/wp-content/uploads/2019/02/arduino-uno.jpg" alt="Arduino Uno">
+
+            <h3>2. 5V Power Supply</h3>
+            <p>A 5V DC power supply is used to power the Arduino Uno and other components.</p>
+            <img src="https://th.bing.com/th/id/OIP.5b87Hi-eArp-sI9gw6JjfQAAAA?rs=1&pid=ImgDetMain" alt="5V Power Supply">
+
+            <h3>3. Ultrasonic Sensor (HC-SR04)</h3>
+            <p>This sensor is used to detect an object within a set distance. It sends out ultrasonic waves and measures the distance by calculating the time taken for the waves to return.</p>
+            <img src="https://www.artekit.eu/wp-content/uploads/hy-srf05-top.jpg" alt="Ultrasonic Sensor">
+
+            <h3>4. Servo Motor</h3>
+            <p>The servo motor is used to open and close the dustbin lid based on the distance detected by the ultrasonic sensor.</p>
+            <img src="https://th.bing.com/th/id/OIP.8SLw0qESHLYDjbERntHQdgHaHa?rs=1&pid=ImgDetMain" alt="Servo Motor">
+        </div>
+
+        <div class="section">
+            <h2>Methodology</h2>
+            <p>The Smart Dustbin operates by using an ultrasonic sensor to detect an object (e.g., a hand). When an object is detected within a range of 10-20 cm, the Arduino activates the servo motor, which opens the lid of the dustbin. After a few seconds, the lid closes automatically.</p>
+        </div>
+
+        <div class="section">
+            <h2>Circuit Diagram</h2>
+            <p>Connect the ultrasonic sensor and the servo motor to the Arduino Uno as shown in the diagram below:</p>
+            <img src="https://techatronic.com/wp-content/uploads/2019/12/Smart-Dustbin_bb-n-1-1024x649.jpg" alt="Circuit Diagram">
+            <ul>
+                <li>Ultrasonic Sensor: Trigger Pin to Arduino Digital Pin 7, Echo Pin to Arduino Digital Pin 6</li>
+                <li>Servo Motor: Signal Pin to Arduino Digital Pin 9</li>
+                <li>Power: Both sensor and motor powered by 5V supply</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Code</h2>
+            <pre>
+#include &lt;Servo.h&gt;
+
+Servo servoMotor;
+const int trigPin = 7;
+const int echoPin = 6;
+const int distanceThreshold = 15; // cm
+
+void setup() {
+    servoMotor.attach(9);
+    pinMode(trigPin, OUTPUT);
+    pinMode(echoPin, INPUT);
+    Serial.begin(9600);
+    servoMotor.write(0); // Close lid
+}
+
+void loop() {
+    long duration, distance;
+    
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+    
+    duration = pulseIn(echoPin, HIGH);
+    distance = (duration * 0.034) / 2;
+    
+    if (distance <= distanceThreshold) {
+        servoMotor.write(90); // Open lid
+        delay(3000); // Keep lid open for 3 seconds
+        servoMotor.write(0); // Close lid
+    }
+}
+            </pre>
+        </div>
+    </div>
+
+</body>
+</html>
